@@ -1,0 +1,102 @@
+package com.example.finanzbuddy.ui.settings;
+
+import androidx.lifecycle.ViewModelProvider;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.example.finanzbuddy.LoginActivity;
+import com.example.finanzbuddy.R;
+import com.example.finanzbuddy.ui.transactions.SharedViewModel;
+import com.example.finanzbuddy.ui.transactions.TransactionAdapter;
+import com.example.finanzbuddy.ui.transactions.TransactionsViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+
+public class SettingsFragment extends Fragment {
+
+    private SettingsViewModel mViewModel;
+    private TransactionsViewModel transactionsViewModel;
+    private TransactionAdapter transactionAdapter;
+
+    private EditText filterAmountEditText;
+    private Button filterButton, sortAscendingButton, sortDescendingButton, sortLargestButton, sortSmallestButton;
+
+    private SharedViewModel sharedViewModel;
+
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        Button logoutButton = view.findViewById(R.id.logoutBtn);
+        transactionsViewModel = new ViewModelProvider(requireActivity()).get(TransactionsViewModel.class);
+        transactionAdapter = new TransactionAdapter(sharedViewModel);
+
+        filterAmountEditText = view.findViewById(R.id.filterAmountEditText);
+        filterButton = view.findViewById(R.id.filterButton);
+        sortAscendingButton = view.findViewById(R.id.sortAscendingButton);
+        sortDescendingButton = view.findViewById(R.id.sortDescendingButton);
+        sortLargestButton = view.findViewById(R.id.sortLargestButton);
+        sortSmallestButton = view.findViewById(R.id.sortSmallestButton);
+
+        logoutButton.setOnClickListener(v -> logoutUser());
+        filterButton.setOnClickListener(v -> {
+            String amountStr = filterAmountEditText.getText().toString().trim();
+            if (!amountStr.isEmpty()) {
+                double minAmount = Double.parseDouble(amountStr);
+                //transactionAdapter.filterByAmount(minAmount);
+
+                sharedViewModel.setSharedAmountData(minAmount);
+            }
+        });
+
+        //sortAscendingButton.setOnClickListener(v -> transactionAdapter.sortByDate(true));
+        //sortDescendingButton.setOnClickListener(v -> transactionAdapter.sortByDate(false));
+
+        sortAscendingButton.setOnClickListener(v -> sharedViewModel.setSharedBooleanData(true));
+        sortDescendingButton.setOnClickListener(v -> sharedViewModel.setSharedBooleanData(false));
+
+        sortLargestButton.setOnClickListener(v -> sharedViewModel.setSharedLargestOrSmallestData(false));
+        sortSmallestButton.setOnClickListener(v -> sharedViewModel.setSharedLargestOrSmallestData(true));
+
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+    }
+
+    private void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
+}
