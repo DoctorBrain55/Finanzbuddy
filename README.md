@@ -1,7 +1,7 @@
 # FinanzBuddy - Projektbeschreibung
 
-
-FinanzBuddy ist eine mobile Anwendung zur Verwaltung persönlicher Finanzen. Die Anwendung ermöglicht es Nutzern, Einnahmen und Ausgaben zu erfassen, Finanzstatistiken einzusehen und ihre finanzielle Situation zu analysieren. Ziel der App ist es, eine benutzerfreundliche und effiziente Lösung für die persönliche Finanzplanung bereitzustellen.
+FinanzBuddy ist eine mobile Anwendung zur Verwaltung persönlicher Finanzen. Die Anwendung ermöglicht es Nutzern, Einnahmen und Ausgaben zu erfassen, Finanzstatistiken einzusehen und ihre finanzielle Situation zu analysieren.
+Ziel der App ist es, eine benutzerfreundliche und effiziente Lösung für die persönliche Finanzplanung bereitzustellen.
 
 Die App verwendet Firebase Authentication für eine sichere Anmeldung sowie eine RecyclerView für die effiziente Anzeige von Transaktionen.
 
@@ -17,44 +17,44 @@ Ekber Pala - Matrikelnummer:
 
 ### Frontend
 
-XML und Jetpack Navigation für das Benutzerinterface und die Navigation zwischen Ansichten.
+- XML und Jetpack Navigation für das Benutzerinterface und die Navigation zwischen Ansichten.
 
-RecyclerView und Adapter für die Darstellung von Transaktionslisten.
+- RecyclerView und Adapter für die Darstellung von Transaktionslisten.
 
-ViewModel und LiveData zur Verwaltung des UI-Status und zur Trennung von UI-Logik und Datenverarbeitung.
+- ViewModel und LiveData zur Verwaltung des UI-Status und zur Trennung von UI-Logik und Datenverarbeitung.
 
 ### Backend
 
-Java (Android) als primäre Programmiersprache zur Implementierung der Geschäftslogik.
+- Java (Android) als primäre Programmiersprache zur Implementierung der Geschäftslogik.
 
-Firebase Authentication zur Verwaltung der Benutzerauthentifizierung.
+- Firebase Authentication zur Verwaltung der Benutzerauthentifizierung.
 
-Firebase Realtime Database zur Speicherung und Verwaltung von Finanzdaten.
+- Firebase Realtime Database zur Speicherung und Verwaltung von Finanzdaten.
 
-Build- und Konfigurationsmanagement
+- Build- und Konfigurationsmanagement
 
-Gradle für die Verwaltung von Abhängigkeiten und den Build-Prozess.
+- Gradle für die Verwaltung von Abhängigkeiten und den Build-Prozess.
 
-AndroidManifest.xml zur Definition der App-Berechtigungen und App-Struktur.
+- AndroidManifest.xml zur Definition der App-Berechtigungen und App-Struktur.
 
 
-Installation und Nutzung
+# Systemvoraussetzungen
 
-Systemvoraussetzungen
+- Android Studio in der aktuellen Version
 
-Android Studio in der aktuellen Version
+- Gradle und die erforderliche Firebase-Konfiguration
 
-Gradle und die erforderliche Firebase-Konfiguration
 
-Installationsschritte
 
-# Klonen des Repositorys:
+# Installationsschritte
 
-git clone https://github.com/dein-repo/finanzbuddy.git
+## Klonen des Repositorys:
 
-Öffnen des Projekts in Android Studio.
+1. git clone https://github.com/dein-repo/finanzbuddy.git
 
-Start der App auf einem Emulator oder einem physischen Gerät.
+2. Öffnen des Projekts in Android Studio.
+
+3. Start der App auf einem Emulator oder einem physischen Gerät.
 
 
 ## Funktionalitäten
