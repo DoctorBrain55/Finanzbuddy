@@ -50,7 +50,7 @@ Ekber Pala - Matrikelnummer:
 
 ## Klonen des Repositorys:
 
-1. git clone https://github.com/dein-repo/finanzbuddy.git
+1. git clone [https://github.com/dein-repo/finanzbuddy.git](https://github.com/DoctorBrain55/Finanzbuddy.git)
 
 2. Öffnen des Projekts in Android Studio.
 
