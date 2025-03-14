@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout für das Transaktionen-Fragment -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,17 +9,19 @@
     android:padding="24dp"
     tools:context=".ui.transactions.TransactionsFragment">
 
+    <!-- Überschrift "Transactions" -->
     <TextView
         android:id="@+id/transactions_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Transactions"
+        android:text="Transaktionen"
         android:textColor="#333333"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Reset-Button (Setzt Transaktionsdaten zurück) -->
     <Button
         android:id="@+id/resetButton"
         android:layout_width="wrap_content"
@@ -31,6 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Container für die Buttons "Add Transaction" und "Reset Filters" -->
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
@@ -42,25 +46,27 @@
         app:layout_constraintTop_toBottomOf="@+id/transactions_title"
         app:layout_constraintBottom_toTopOf="@+id/transactionRecyclerView">
 
+        <!-- Button zum Hinzufügen einer neuen Transaktion -->
         <Button
             android:id="@+id/addTransactionButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="#673AB7"
-            android:text="Add Transaction"
+            android:text="Transaktion hinzufügen"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             app:cornerRadius="8dp"
             android:layout_marginEnd="8dp" />
 
+        <!-- Button zum Zurücksetzen der Filter -->
         <Button
             android:id="@+id/resetFiltersButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="#673AB7"
-            android:text="Reset Filters"
+            android:text="Filter zurücksetzen"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             app:cornerRadius="8dp"
@@ -68,8 +74,7 @@
             android:layout_marginTop="3dp"/>
     </LinearLayout>
 
-
-
+    <!-- RecyclerView für die Anzeige der Transaktionen -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/transactionRecyclerView"
         android:layout_width="match_parent"
