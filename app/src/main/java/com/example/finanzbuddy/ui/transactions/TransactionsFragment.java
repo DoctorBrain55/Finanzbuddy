@@ -24,11 +24,14 @@ import android.widget.Toast;
 
 import android.app.DatePickerDialog;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import java.util.Calendar;
 
 import com.example.finanzbuddy.R;
 
+/**
+ * Fragment für die Anzeige und Verwaltung der Transaktionsliste.
+ * Enthält Funktionen zum Hinzufügen, Filtern, Sortieren und Zurücksetzen von Transaktionen.
+ */
 public class TransactionsFragment extends Fragment {
 
     private TransactionsViewModel mViewModel;
@@ -38,35 +41,38 @@ public class TransactionsFragment extends Fragment {
 
     private SharedViewModel sharedViewModel;
 
+    /**
+     * Erstellt eine neue Instanz des Fragments.
+     */
     public static TransactionsFragment newInstance() {
         return new TransactionsFragment();
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // ViewModel zur gemeinsamen Nutzung von Daten initialisieren
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transactions, container, false);
 
-        // Initialize RecyclerView
+        // RecyclerView initialisieren
         transactionRecyclerView = view.findViewById(R.id.transactionRecyclerView);
         transactionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Initialize Adapter
+        // Adapter initialisieren
         transactionAdapter = new TransactionAdapter(sharedViewModel);
         transactionRecyclerView.setAdapter(transactionAdapter);
 
-        // Add Transaction Button
+        // Button zum Hinzufügen einer Transaktion
         addTransactionButton = view.findViewById(R.id.addTransactionButton);
         addTransactionButton.setOnClickListener(v -> showAddTransactionDialog());
 
+        // Button zum Zurücksetzen von Filtern
         resetFiltersButton = view.findViewById(R.id.resetFiltersButton);
         resetFiltersButton.setOnClickListener(v -> transactionAdapter.resetAllFilters());
 
@@ -75,29 +81,20 @@ public class TransactionsFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        mViewModel = new ViewModelProvider(requireActivity()).get(TransactionsViewModel.class);
-//
-//        // Observe transactions from ViewModel
-//        mViewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
-//            transactionAdapter.setTransactions(transactions);
-//        });
-//    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(TransactionsViewModel.class);
 
-        // Ensure latest data is fetched when fragment loads
+        // Stellt sicher, dass die neuesten Daten beim Laden des Fragments abgerufen werden
         mViewModel.fetchTransactions();
 
+        // Beobachtet Änderungen der Transaktionsliste und aktualisiert die RecyclerView
         mViewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
             Log.d("TransactionsFragment", "Updating UI with " + transactions.size() + " transactions");
             transactionAdapter.setTransactions(transactions);
 
+            // Überprüfung, ob das SharedViewModel verfügbar ist
             if (sharedViewModel != null) {
                 sharedViewModel.getSharedAmountData().observe(getViewLifecycleOwner(), new Observer<Double>() {
                     @Override
@@ -106,22 +103,21 @@ public class TransactionsFragment extends Fragment {
                         Log.d("TransactionsViewModel", "Shared data changed: " + s);
                         transactionAdapter.filterByAmount(s);
                     }
-
                 });
+
                 sharedViewModel.getSharedBooleanData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean s) {
                         if (s == null) return;
-
                         Log.d("TransactionsViewModel", "Shared data changed: " + s);
                         transactionAdapter.sortByDate(s);
                     }
                 });
+
                 sharedViewModel.getSharedLargestOrSmallestData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean s) {
                         if (s == null) return;
-
                         Log.d("TransactionsViewModel", "Shared data changed: " + s);
                         transactionAdapter.sortByAmount(s);
                     }
@@ -131,56 +127,56 @@ public class TransactionsFragment extends Fragment {
             }
         });
 
+        // Button zum Zurücksetzen der Transaktionen
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mViewModel.resetTransactions(transactionAdapter);
-
             }
         });
-
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        // Stellt sicher, dass beim Zurückkehren zum Fragment die neuesten Daten geladen werden
         if (mViewModel != null) {
             Log.d("TransactionsFragment", "Resuming - Fetching latest transactions");
             mViewModel.fetchTransactions();
         }
     }
 
-
+    /**
+     * Zeigt einen Dialog zum Hinzufügen einer neuen Transaktion an.
+     */
     private void showAddTransactionDialog() {
-        // Inflate the dialog layout
+        // Dialog-Layout laden
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_transaction, null);
 
-        // Initialize dialog components
+        // Dialog-Komponenten initialisieren
         EditText descriptionEditText = dialogView.findViewById(R.id.descriptionEditText);
         EditText amountEditText = dialogView.findViewById(R.id.amountEditText);
         EditText dateEditText = dialogView.findViewById(R.id.dateEditText);
         Button addButton = dialogView.findViewById(R.id.addButton);
         SwitchCompat expenseSwitch = dialogView.findViewById(R.id.incomeOrExpenseSwitch);
 
-        // Create and show the dialog
+        // Dialog erstellen und anzeigen
         AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("Add New Transaction")
+                .setTitle("Neue Transaktion hinzufügen")
                 .setView(dialogView)
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("Abbrechen", null)
                 .create();
 
+        // Datumsauswahl für die Transaktion
         dateEditText.setOnClickListener(v -> {
-            // Get current date
             final Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            // Show DatePickerDialog
+            // Zeigt einen DatePickerDialog an, um das Datum auszuwählen
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(), (view, selectedYear, selectedMonth, selectedDay) -> {
-                // Format the selected date (YYYY-MM-DD)
                 String selectedDate = selectedYear + "-" + String.format("%02d", (selectedMonth + 1)) + "-" + String.format("%02d", selectedDay);
                 dateEditText.setText(selectedDate);
             }, year, month, day);
@@ -188,40 +184,40 @@ public class TransactionsFragment extends Fragment {
             datePickerDialog.show();
         });
 
+        // Schalter für Einnahmen oder Ausgaben
         expenseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    expenseSwitch.setText("Expense");
+                    expenseSwitch.setText("Ausgabe");
                 } else {
-                    expenseSwitch.setText("Income");
+                    expenseSwitch.setText("Einnahme");
                 }
             }
         });
 
-        // Handle Add Button Click
+        // Fügt eine neue Transaktion hinzu, wenn der Benutzer auf "Hinzufügen" klickt
         addButton.setOnClickListener(v -> {
             String description = descriptionEditText.getText().toString().trim();
             String amountStr = amountEditText.getText().toString().trim();
             String date = dateEditText.getText().toString().trim();
             Boolean isExpense = expenseSwitch.isChecked();
 
+            // Überprüfung, ob alle Felder ausgefüllt sind
             if (description.isEmpty() || amountStr.isEmpty() || date.isEmpty()) {
-                Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             double amount = Double.parseDouble(amountStr);
-            //Transaction transaction = new Transaction(description, amount, date);
 
-            // Add transaction to Firebase via ViewModel
+            // Transaktion über das ViewModel in Firebase speichern
             mViewModel.addTransaction(description, amount, date, isExpense);
 
-            // Dismiss the dialog
+            // Dialog schließen
             dialog.dismiss();
         });
 
         dialog.show();
     }
-
 }
