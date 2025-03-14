@@ -24,17 +24,27 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Adapter für die RecyclerView, um Transaktionen in einer Liste anzuzeigen.
+ * Enthält Funktionen zum Filtern, Sortieren und Löschen von Transaktionen.
+ */
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
-    private List<Transaction> transactions = new ArrayList<>();
-    private List<Transaction> allTransactions = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>(); // Aktuell gefilterte Transaktionen
+    private List<Transaction> allTransactions = new ArrayList<>(); // Gesamtliste aller Transaktionen
 
-    private SharedViewModel sharedViewModel;
+    private SharedViewModel sharedViewModel; // ViewModel zur gemeinsamen Nutzung von Daten
 
+    /**
+     * Konstruktor zur Übergabe des SharedViewModel.
+     */
     public TransactionAdapter(SharedViewModel sharedViewModel) {
         this.sharedViewModel = sharedViewModel;
     }
 
+    /**
+     * Setzt die Liste der Transaktionen und aktualisiert die RecyclerView.
+     */
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
         this.allTransactions = new ArrayList<>(transactions);
@@ -42,13 +52,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         notifyDataSetChanged();
     }
 
+    /**
+     * Setzt alle Filter zurück und stellt die Original-Transaktionsliste wieder her.
+     */
     public void resetAllFilters() {
-        //fetchTransactions();
-
-        //Reset all sharedviewmodel
         transactions = allTransactions;
 
-        // Reset ViewModel values
+        // SharedViewModel zurücksetzen
         if (sharedViewModel != null) {
             sharedViewModel.resetAllValues();
         }
@@ -56,9 +66,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         notifyDataSetChanged();
     }
 
+    /**
+     * Filtert Transaktionen nach einem bestimmten Maximalbetrag.
+     */
     public void filterByAmount(double minAmount) {
         transactions = allTransactions.stream()
-                .filter(t -> t.getAmount() <= minAmount) // Change from >= to <=
+                .filter(t -> t.getAmount() <= minAmount)
                 .collect(Collectors.toList());
 
         Log.d("Filter", "Total transactions filtered: " + transactions.size());
@@ -67,17 +80,22 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         notifyDataSetChanged();
     }
 
-
+    /**
+     * Sortiert die Transaktionsliste nach Datum (aufsteigend oder absteigend).
+     */
     public void sortByDate(boolean ascending) {
         Collections.sort(transactions, Comparator.comparing(Transaction::getDate));
         if (!ascending) {
             Collections.reverse(transactions);
         }
-        Log.println(Log.DEBUG, "Sort", "Sort by date: " + ascending);
+        Log.d("Sort", "Sort by date: " + ascending);
 
         notifyDataSetChanged();
     }
 
+    /**
+     * Sortiert die Transaktionsliste nach Betrag (aufsteigend oder absteigend).
+     */
     public void sortByAmount(boolean ascending) {
         Collections.sort(transactions, Comparator.comparing(Transaction::getAmount));
 
@@ -85,12 +103,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             Collections.reverse(transactions);
         }
 
-        Log.println(Log.DEBUG, "Sort", "Sort by amount: " + ascending);
+        Log.d("Sort", "Sort by amount: " + ascending);
 
         notifyDataSetChanged();
     }
 
-
+    /**
+     * Erstellt eine neue View für ein RecyclerView-Element.
+     */
     @NonNull
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -98,33 +118,42 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return new TransactionViewHolder(view);
     }
 
+    /**
+     * Bindet die Daten einer Transaktion an die RecyclerView-Zelle.
+     */
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
         holder.bind(transaction);
 
+        // Löscht die Transaktion aus der Datenbank und RecyclerView bei Klick auf den Button
         holder.deleteButton.setOnClickListener(v -> {
             deleteTransaction(transaction.getId(), position);
         });
 
-        // Set color based on positive/negative amount
+        // Setzt das Icon und die Farbe je nach positivem oder negativem Betrag
         if (transaction.getAmount() < 0) {
             holder.iconImageView.setImageResource(R.drawable.ic_transaction_negative);
-            holder.amountTextView.setTextColor(Color.RED);  // Expenses in red
+            holder.amountTextView.setTextColor(Color.RED);  // Ausgaben in Rot
         } else {
             holder.iconImageView.setImageResource(R.drawable.ic_transaction_default);
-            holder.amountTextView.setTextColor(Color.GREEN); // Income in green
+            holder.amountTextView.setTextColor(Color.GREEN); // Einnahmen in Grün
         }
     }
 
+    /**
+     * Gibt die Anzahl der angezeigten Transaktionen zurück.
+     */
     @Override
     public int getItemCount() {
         return transactions.size();
     }
 
+    /**
+     * ViewHolder-Klasse zur Verwaltung einzelner Transaktionsansichten.
+     */
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
         private TextView descriptionTextView, amountTextView, dateTextView;
-
         private ImageView iconImageView;
         private Button deleteButton;
 
@@ -133,12 +162,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             amountTextView = itemView.findViewById(R.id.amountTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
-
             iconImageView = itemView.findViewById(R.id.transactionIcon);
-
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }
 
+        /**
+         * Setzt die Werte der Transaktion in die UI-Elemente.
+         */
         public void bind(Transaction transaction) {
             descriptionTextView.setText(transaction.getDescription());
             amountTextView.setText("$" + String.valueOf(transaction.getAmount()));
@@ -146,6 +176,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
     }
 
+    /**
+     * Löscht eine Transaktion aus der Firebase-Datenbank und entfernt sie aus der RecyclerView.
+     */
     private void deleteTransaction(String transactionId, int position) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -161,9 +194,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         databaseReference.removeValue()
                 .addOnSuccessListener(aVoid -> {
-                    //transactions.remove(position);
                     notifyItemRemoved(position);
-                    //notifyItemRangeChanged(position, transactions.size()); // Update indices
                     Log.d("TransactionAdapter", "Transaction deleted successfully");
                 })
                 .addOnFailureListener(e -> {
