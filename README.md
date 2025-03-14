@@ -8,7 +8,9 @@ Die App verwendet Firebase Authentication für eine sichere Anmeldung sowie eine
 # Mitwirkende
 
 Das Projekt wurde von den folgenden Studierenden entwickelt:
+
 Samed Sevinc - Matrikelnummer: 77211971390
+
 Ekber Pala - Matrikelnummer: 77211964967
 
 
