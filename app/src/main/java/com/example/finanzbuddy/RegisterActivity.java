@@ -19,8 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,17 +28,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
+    
+    // UI-Elemente für die Registrierung
     TextInputEditText editTextUsername, editTextEmail, editTextPassword;
     Button buttonRegistration;
     ProgressBar progressBar;
     TextView loginTextView;
-    FirebaseAuth mAuth;
+    FirebaseAuth mAuth; // Firebase-Authentifizierung
 
     @Override
     public void onStart() {
         super.onStart();
+        // Prüft, ob der Benutzer bereits angemeldet ist
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
+            // Falls bereits angemeldet, direkte Weiterleitung zur MainActivity
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -52,13 +54,18 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
+
+        // Anpassung der UI an Bildschirmränder
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Firebase-Authentifizierung initialisieren
         mAuth = FirebaseAuth.getInstance();
+
+        // UI-Elemente mit XML-Layout verknüpfen
         editTextUsername = findViewById(R.id.username);
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
@@ -66,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         loginTextView = findViewById(R.id.loginNow);
         progressBar = findViewById(R.id.progressBar);
 
+        // Falls der Benutzer schon ein Konto hat, Weiterleitung zur LoginActivity
         loginTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,73 +82,76 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Registrierung-Button: Überprüfung der Eingabe und Anmeldung in Firebase
         buttonRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE); // Ladeanzeige aktivieren
 
+                // Nutzereingaben abrufen
                 String username, email, password;
                 username = String.valueOf(editTextUsername.getText());
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
 
-                if (TextUtils.isEmpty(username)){
-                    Toast.makeText(RegisterActivity.this, "Enter your username", Toast.LENGTH_SHORT).show();
+                // Eingaben validieren
+                if (TextUtils.isEmpty(username)) {
+                    Toast.makeText(RegisterActivity.this, "Geben Sie Ihren Benutzernamen ein", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(RegisterActivity.this, "Geben Sie Ihre E-Mail-Adresse ein", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(RegisterActivity.this, "Geben Sie ein sicheres Passwort ein", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(RegisterActivity.this, "Enter your email address", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(RegisterActivity.this, "Enter a strong password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
+                // Nutzer in Firebase registrieren
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE); // Ladeanzeige deaktivieren
                                 if (task.isSuccessful()) {
-                                    // Get the currently signed-in user
+                                    // Registrierung erfolgreich -> Nutzer in Firebase-Datenbank speichern
                                     FirebaseUser user = mAuth.getCurrentUser();
 
                                     if (user != null) {
-                                        // Get user ID
-                                        String userId = user.getUid();
+                                        String userId = user.getUid(); // Eindeutige User-ID erhalten
 
-                                        // Create a reference to Firebase Database
-                                        DatabaseReference databaseRef = FirebaseDatabase.getInstance("https://finanzbuddy-f0ccc-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+                                        // Referenz zur Firebase-Realtime-Datenbank erstellen
+                                        DatabaseReference databaseRef = FirebaseDatabase.getInstance(
+                                                "https://finanzbuddy-f0ccc-default-rtdb.europe-west1.firebasedatabase.app/"
+                                        ).getReference("users");
 
-                                        // Create a HashMap to store user details
+                                        // HashMap zur Speicherung der Benutzerdaten
                                         HashMap<String, Object> userData = new HashMap<>();
-                                        userData.put("username", username);  // Make sure you get 'username' from user input
+                                        userData.put("username", username);
                                         userData.put("email", email);
 
-                                        // Save data to Firebase Database under the user's UID
+                                        // Speichert die Daten in der Firebase-Realtime-Datenbank unter der User-ID
                                         databaseRef.child(userId).setValue(userData)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            Toast.makeText(RegisterActivity.this, "Your account has been created and saved.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(RegisterActivity.this, "Ihr Konto wurde erfolgreich erstellt und gespeichert.", Toast.LENGTH_SHORT).show();
                                                         } else {
-                                                            Toast.makeText(RegisterActivity.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(RegisterActivity.this, "Fehler beim Speichern der Nutzerdaten.", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });
                                     }
 
-                                    // Sign in success, update UI with the signed-in user's information
-                                    //FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(RegisterActivity.this, "Your account has been created.",
+                                    // Erfolgreiche Registrierung -> Bestätigung für den Benutzer
+                                    Toast.makeText(RegisterActivity.this, "Ihr Konto wurde erfolgreich erstellt.",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                    // Falls die Registrierung fehlschlägt -> Fehlermeldung anzeigen
+                                    Toast.makeText(RegisterActivity.this, "Registrierung fehlgeschlagen.",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
