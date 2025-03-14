@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout für den Registrierungsbildschirm -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,6 +10,7 @@
     android:padding="24dp"
     tools:context=".RegisterActivity">
 
+    <!-- App-Logo -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="120dp"
@@ -20,12 +22,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <!-- Titel "Registrieren" -->
     <TextView
         android:id="@+id/register_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Register"
+        android:text="Registrieren"
         android:textColor="#333333"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -34,6 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo" />
 
+    <!-- Eingabefeld für den Benutzernamen -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/username_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -54,12 +58,12 @@
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
-            android:inputType="textEmailAddress" />
+            android:hint="Benutzername"
+            android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
+    <!-- Eingabefeld für die E-Mail-Adresse -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -80,11 +84,12 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="E-Mail-Adresse"
             android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Eingabefeld für das Passwort -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -106,11 +111,12 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="Passwort"
             android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Registrierungs-Button -->
     <Button
         android:id="@+id/btn_registration"
         android:layout_width="match_parent"
@@ -118,7 +124,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginHorizontal="5dp"
         android:backgroundTint="#2196F3"
-        android:text="REGISTER"
+        android:text="REGISTRIEREN"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:cornerRadius="8dp"
@@ -127,12 +133,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_layout" />
 
+    <!-- Link zum Login-Bildschirm -->
     <TextView
         android:id="@+id/loginNow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Already have an account? Login"
+        android:text="Bereits ein Konto? Hier einloggen"
         android:textColor="#2196F3"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -140,6 +147,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_registration" />
 
+    <!-- Ladeanimation (wird angezeigt, wenn Registrierung verarbeitet wird) -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
