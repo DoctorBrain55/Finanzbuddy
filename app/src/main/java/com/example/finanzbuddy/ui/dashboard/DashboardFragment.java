@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.finanzbuddy.R;
 import com.example.finanzbuddy.databinding.FragmentDashboardBinding;
@@ -34,11 +33,12 @@ public class DashboardFragment extends Fragment {
     private DatabaseReference transactionsRef;
     private FirebaseUser user;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        // Initialize UI Components
+        // UI-Elemente initialisieren
         tvUsername = view.findViewById(R.id.hello_user);
         tvUserEmail = view.findViewById(R.id.tvUserEmail);
         tvAccountBalance = view.findViewById(R.id.tvAccountBalance);
@@ -46,21 +46,22 @@ public class DashboardFragment extends Fragment {
         tvMonthlyTransactionsCount = view.findViewById(R.id.tvMonthlyTransactionsCount);
         tvWeeklyTransactionsCount = view.findViewById(R.id.tvWeeklyTransactionsCount);
 
-        // Get authenticated user
+        // Aktuell angemeldeten Benutzer abrufen
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            // Display user email
+            // Benutzer-E-Mail anzeigen
             tvUserEmail.setText(user.getEmail());
 
-            // Reference to Firebase Database
-            transactionsRef = FirebaseDatabase.getInstance("https://finanzbuddy-f0ccc-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users")
+            // Verweis auf Firebase-Datenbank für Transaktionsdaten
+            transactionsRef = FirebaseDatabase.getInstance("https://finanzbuddy-f0ccc-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("users")
                     .child(user.getUid())
                     .child("transactions");
 
-            //Fetch username
+            // Benutzername abrufen
             fetchUsername();
-            // Fetch transaction data
+            // Transaktionsdaten abrufen
             fetchTransactionsData();
         }
 
@@ -70,10 +71,11 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        binding = null; // Speicherbereinigung
     }
 
     private void fetchTransactionsData() {
+        // Holt alle Transaktionen des Benutzers aus Firebase
         transactionsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -82,7 +84,7 @@ public class DashboardFragment extends Fragment {
                 int weeklyTransactionCount = 0;
                 int monthlyTransactionCount = 0;
 
-                // Get the current date
+                // Aktuelles Datum abrufen
                 Calendar calendar = Calendar.getInstance();
                 int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
                 int currentMonth = calendar.get(Calendar.MONTH);
@@ -90,14 +92,15 @@ public class DashboardFragment extends Fragment {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
+                // Iteration durch alle Transaktionen
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Transaction transaction = dataSnapshot.getValue(Transaction.class);
                     if (transaction != null) {
-                        totalBalance += transaction.getAmount(); // Calculate total balance
-                        transactionCount++; // Count total transactions
+                        totalBalance += transaction.getAmount(); // Gesamtguthaben berechnen
+                        transactionCount++; // Anzahl der Transaktionen erhöhen
 
                         try {
-                            // Parse the transaction date
+                            // Transaktionsdatum parsen
                             Date transactionDate = dateFormat.parse(transaction.getDate());
                             Calendar transactionCalendar = Calendar.getInstance();
                             transactionCalendar.setTime(transactionDate);
@@ -106,12 +109,12 @@ public class DashboardFragment extends Fragment {
                             int transactionMonth = transactionCalendar.get(Calendar.MONTH);
                             int transactionYear = transactionCalendar.get(Calendar.YEAR);
 
-                            // Check if the transaction is from the current week
+                            // Prüfen, ob die Transaktion in der aktuellen Woche liegt
                             if (transactionYear == currentYear && transactionWeek == currentWeek) {
                                 weeklyTransactionCount++;
                             }
 
-                            // Check if the transaction is from the current month
+                            // Prüfen, ob die Transaktion im aktuellen Monat liegt
                             if (transactionYear == currentYear && transactionMonth == currentMonth) {
                                 monthlyTransactionCount++;
                             }
@@ -122,7 +125,7 @@ public class DashboardFragment extends Fragment {
                     }
                 }
 
-                // Update UI
+                // UI-Elemente mit berechneten Werten aktualisieren
                 tvAccountBalance.setText("$" + String.format("%.2f", totalBalance));
                 tvTransactionsCount.setText(String.valueOf(transactionCount));
                 tvWeeklyTransactionsCount.setText(String.valueOf(weeklyTransactionCount));
@@ -131,12 +134,13 @@ public class DashboardFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle database error
+                // Fehler bei der Datenbankabfrage behandeln
             }
         });
     }
 
     private void fetchUsername() {
+        // Holt den Benutzernamen aus Firebase
         DatabaseReference transactionsRef = FirebaseDatabase.getInstance("https://finanzbuddy-f0ccc-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("users")
                 .child(user.getUid());
@@ -145,26 +149,24 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Retrieve the username
+                    // Benutzernamen abrufen
                     String username = snapshot.child("username").getValue(String.class);
 
                     if (username != null) {
-                        // Use the username (e.g., display it in a TextView)
                         Log.d("Firebase", "Username: " + username);
-                        tvUsername.setText("Hello " + username + "!");
+                        tvUsername.setText("Hallo " + username + "!");
                     } else {
-                        Log.e("Firebase", "Username not found");
+                        Log.e("Firebase", "Benutzername nicht gefunden");
                     }
                 } else {
-                    Log.e("Firebase", "User data not found");
+                    Log.e("Firebase", "Benutzerdaten nicht gefunden");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "Database error: " + error.getMessage());
+                Log.e("Firebase", "Datenbankfehler: " + error.getMessage());
             }
         });
-
     }
 }
