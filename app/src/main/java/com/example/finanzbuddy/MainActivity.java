@@ -15,28 +15,31 @@ import com.example.finanzbuddy.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    private ActivityMainBinding binding; // ViewBinding für einfachere UI-Verwaltung
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialisiert ViewBinding für das Layout
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Zugriff auf das Bottom Navigation Menü
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        // Definiert die Navigationsstruktur: Diese Menüpunkte sind Hauptziele
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                 R.id.navigation_dashboard,R.id.navigation_transactions, R.id.navigation_statistics, R.id.navigation_settings)
+                 R.id.navigation_dashboard, R.id.navigation_transactions, 
+                 R.id.navigation_statistics, R.id.navigation_settings)
                 .build();
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+
+        // Holt das NavHostFragment, das die Navigation verwaltet
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         NavController navController = navHostFragment.getNavController();
 
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // Verbindet das Bottom Navigation Menü mit dem NavController
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
-
 }
