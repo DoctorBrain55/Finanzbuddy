@@ -12,9 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinanzBuddy"
         tools:targetApi="31">
+
+<!-- Definiert die Registrierung der Aktivitäten in der App -->
         <activity
             android:name=".RegisterActivity"
-            android:exported="false" />
+            android:exported="false" /> <!-- Registrierung ist nicht öffentlich zugänglich -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -28,11 +30,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+<!--            <!-- Intent-Filter für den App-Start ist auskommentiert,
+                 da die LoginActivity als Startpunkt dient -->
         </activity>
     </application>
 
