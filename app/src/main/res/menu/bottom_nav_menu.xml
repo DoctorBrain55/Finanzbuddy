@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Menü für die untere Navigationsleiste (Bottom Navigation) -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Navigationspunkt: Dashboard -->
     <item
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_dashboard" />
 
+    <!-- Navigationspunkt: Transaktionen -->
     <item
         android:id="@+id/navigation_transactions"
         android:icon="@drawable/ic_add_task_black_24dp"
-        android:title="Transactions" />
+        android:title="Transaktionen" />
 
+    <!-- Navigationspunkt: Statistiken -->
     <item
         android:id="@+id/navigation_statistics"
         android:icon="@drawable/ic_line_graph_black_24dp"
-        android:title="Statistics" />
+        android:title="Statistiken" />
 
+    <!-- Navigationspunkt: Einstellungen -->
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Settings" />
+        android:title="Einstellungen" />
 
 </menu>
