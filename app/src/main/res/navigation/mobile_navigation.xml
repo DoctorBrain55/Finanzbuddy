@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Navigationsgraph für die App -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_dashboard">
+    app:startDestination="@+id/navigation_dashboard"> <!-- Startfragment beim Öffnen der App -->
 
-
+    <!-- Fragment für das Dashboard -->
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.finanzbuddy.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
+    <!-- Fragment für die Transaktionsübersicht -->
     <fragment
         android:id="@+id/navigation_transactions"
         android:name="com.example.finanzbuddy.ui.transactions.TransactionsFragment"
-        android:label="Transactions"
+        android:label="Transaktionen"
         tools:layout="@layout/fragment_transactions" />
 
+    <!-- Fragment für die Statistiken -->
     <fragment
         android:id="@+id/navigation_statistics"
         android:name="com.example.finanzbuddy.ui.statistics.StatisticsFragment"
-        android:label="Statistics"
+        android:label="Statistiken"
         tools:layout="@layout/fragment_statistics" />
 
+    <!-- Fragment für die Einstellungen -->
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.finanzbuddy.ui.settings.SettingsFragment"
-        android:label="Settings"
+        android:label="Einstellungen"
         tools:layout="@layout/fragment_settings" />
+
 </navigation>
