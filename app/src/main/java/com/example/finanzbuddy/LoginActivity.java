@@ -25,17 +25,20 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
+    // UI-Elemente für die Login-Seite
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin;
     ProgressBar progressBar;
     TextView registerTextView;
-    FirebaseAuth mAuth;
+    FirebaseAuth mAuth; // Firebase-Authentifizierung
 
     @Override
     public void onStart() {
         super.onStart();
+        // Prüft, ob der Benutzer bereits angemeldet ist
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
+            // Falls angemeldet, direkte Weiterleitung zur MainActivity
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -47,19 +50,25 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
+        // Anpassung des UI-Layouts an Bildschirmränder
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Firebase-Authentifizierung initialisieren
         mAuth = FirebaseAuth.getInstance();
+
+        // UI-Elemente mit XML-Layout verknüpfen
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
         progressBar = findViewById(R.id.progressBar);
         registerTextView = findViewById(R.id.registerNow);
 
+        // Weiterleitung zur Registrierungsseite bei Klick auf "Jetzt registrieren"
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,44 +78,48 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Login-Button: Überprüfung der Eingabe und Anmeldung über Firebase
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE); // Ladeanzeige aktivieren
 
+                // E-Mail und Passwort aus den Eingabefeldern holen
                 String email, password;
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(LoginActivity.this, "Enter your email address", Toast.LENGTH_SHORT).show();
+                // Überprüfung, ob E-Mail und Passwort ausgefüllt sind
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(LoginActivity.this, "Geben Sie Ihre E-Mail-Adresse ein", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(LoginActivity.this, "Geben Sie Ihr Passwort ein", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(LoginActivity.this, "Enter your password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
+                // Anmeldung bei Firebase mit E-Mail und Passwort
                 mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE); // Ladeanzeige deaktivieren
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "Login was successful.",
+                                    // Erfolgreiche Anmeldung -> Weiterleitung zur MainActivity
+                                    Toast.makeText(LoginActivity.this, "Login erfolgreich.",
                                             Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    // Anmeldung fehlgeschlagen -> Fehlermeldung anzeigen
+                                    Toast.makeText(LoginActivity.this, "Authentifizierung fehlgeschlagen.",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
             }
         });
-
     }
 }
