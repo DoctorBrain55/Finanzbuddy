@@ -30,7 +30,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">
-<!--            <!-- Intent-Filter für den App-Start ist auskommentiert,
+        <!-- Intent-Filter für den App-Start ist auskommentiert,
                  da die LoginActivity als Startpunkt dient -->
         </activity>
     </application>
