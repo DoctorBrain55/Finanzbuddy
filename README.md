@@ -71,10 +71,11 @@ Ekber Pala - Matrikelnummer: 77211964967
 
 - Speicherung der Finanzdaten in Firebase Realtime Database.
 
-## Verbesserungspotenzial
+## Verbesserungspotenzial & Backlog
 
-- Entwickler können die App um zusätzliche Funktionen erweitern:
 
+- Passwort zurücksetzen
+  
 - Neue Fragments und ViewModels für erweiterte Funktionalitäten.
 
 - Anpassung der Datenmodelle in Transaction.java, um weitere Finanzdaten zu erfassen.
@@ -83,15 +84,15 @@ Ekber Pala - Matrikelnummer: 77211964967
 
 - Implementierung eines Dunkelmodus für eine verbesserte Benutzererfahrung.
 
-Integration von Benachrichtigungen für wiederkehrende Zahlungen.
+- Integration von Benachrichtigungen für wiederkehrende Zahlungen.
 
-Import/Export von Finanzberichten im CSV- oder PDF-Format.
+- Import/Export von Finanzberichten im CSV- oder PDF-Format.
 
  
 # Kontakt
 
 Für Fragen oder Beiträge zum Projekt kontaktieren Sie uns gerne über den E-Mail Weg:
 
-E-Mail: kontakt@finanzbuddy.com
+E-Mail: s_pala22@stud.hwr-berlin.de
 
 GitHub: [GitHub-Projektseite](https://github.com/dein-repo/finanzbuddy.git)
