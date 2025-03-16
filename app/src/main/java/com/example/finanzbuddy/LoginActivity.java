@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Geben Sie Ihr Passwort ein", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                
                 // Anmeldung bei Firebase mit E-Mail und Passwort
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
