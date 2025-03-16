@@ -96,3 +96,12 @@ Für Fragen oder Beiträge zum Projekt kontaktieren Sie uns gerne über den E-Ma
 E-Mail: s_pala22@stud.hwr-berlin.de
 
 GitHub: [GitHub-Projektseite](https://github.com/dein-repo/finanzbuddy.git)
+
+# Quellen
+- [ https://github.com/DoctorBrain55/Finanzbuddy.git](https://michaelkipp.de/android/hilfe.html)
+- https://michaelkipp.de/android/intro.html
+- https://michaelkipp.de/android/erste-app.html
+- https://www.youtube.com/playlist?list=PLYx38U7gxBf3pmsHVTUwRT_lGON6ZIBHi
+- https://www.youtube.com/watch?v=N8p7IJiwSLA
+- https://xdaforums.com/t/great-android-app-ui-design-examples.788071/
+- ChatGPT als Unterstützung bei der Fehlersuche
