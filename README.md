@@ -78,6 +78,8 @@ Ekber Pala - Matrikelnummer: 77211964967
   
 - Neue Fragments und ViewModels für erweiterte Funktionalitäten.
 
+- Kategorisierung nach Ausgabeart (Mobilität, Versicherung, Sparen, ..)
+
 - Anpassung der Datenmodelle in Transaction.java, um weitere Finanzdaten zu erfassen.
 
 - Änderungen im UI-Design
